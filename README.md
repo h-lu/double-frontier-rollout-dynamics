@@ -28,6 +28,9 @@
 - `k`：adoption capital
 - `h`：judgment capital
 
+模型的完整方程以及 `2D/3D` reduction 的显式写法已经补在
+[research-background.md](/Users/wangxq/Documents/AUTO/docs/research-background.md) 里。
+
 在完整系统之外，代码还保留了两层 reduced model：
 
 - `3D` 模型：固定 `k`
