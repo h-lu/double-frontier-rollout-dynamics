@@ -12,6 +12,9 @@ on:
 The project intentionally uses Julia only. There is no Python or MATLAB path in
 the workflow.
 
+The broader research context and staged numerical roadmap are summarized in
+[docs/research-background.md](/Users/wangxq/Documents/AUTO/docs/research-background.md).
+
 ## Model Layers
 
 The main script is a smooth `4D` model with states:
@@ -38,6 +41,7 @@ the right place to determine whether the model actually supports:
 ## Repository Layout
 
 - `Project.toml` and `Manifest.toml`: Julia environment
+- `docs/research-background.md`: organized research plan and experiment roadmap
 - `scripts/install_status.jl`: package sanity check
 - `scripts/double_frontier_rollout.jl`: full model definition, `2D` continuation,
   hysteresis sweeps, and representative `4D` simulations
