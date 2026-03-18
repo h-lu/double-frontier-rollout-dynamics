@@ -1,128 +1,119 @@
-# Research Background
+# 研究背景
 
-This note organizes the current research plan behind the double-frontier rollout
-model. It is intended as background for the code in this repository rather than
-as a polished paper draft.
+这份文档用于整理当前双前沿 rollout 模型背后的研究计划。它的定位是“代码仓库的研究背景说明”，不是论文终稿。
 
-## Objective
+## 一、研究目标
 
-The main goal is to determine which dynamical mechanisms are genuinely present
-in the model before committing to a paper narrative. The key question is not
-"can we make a complicated `4D` system look interesting?" but:
+这个项目最核心的目标，不是把一个 `4D` 系统堆得很复杂，而是先回答几个更基础、也更关键的问题：
 
-- does the reduced model have fold geometry?
-- is there a Hopf bifurcation?
-- are there stable limit cycles?
-- is there a narrow canard-style transition?
-- do higher-dimensional reductions support MMO or bursting?
+- reduced model 里到底有没有 fold 几何？
+- 是否存在 Hopf？
+- 有没有稳定极限环？
+- 振荡 onset 是不是 canard-style 的窄窗口跳变？
+- 更高维的 reduction 是否真的支持 MMO 或 bursting？
 
-That is why the workflow starts from reduced models and only returns to the full
-system once the geometry is already understood.
+所以工作流必须先从 reduced model 开始，等低维几何结构清楚以后，再回到完整系统。
 
-## Julia-Only Numerical Strategy
+## 二、Julia-only 数值路线
 
-The original planning discussion referenced SciPy, MatCont, and AUTO as the
-standard numerical toolkit for stiff slow-fast systems and continuation. In this
-repository we implement the same research logic entirely in Julia:
+最初的讨论里提到过 SciPy、MatCont 和 AUTO 这类经典工具，它们代表的是一条标准的慢快系统数值路线：stiff 直接积分和 continuation 并用。在当前仓库里，这条路线全部改写成 Julia 版本：
 
-- `OrdinaryDiffEq.jl` replaces the stiff-IVP role
-- `BifurcationKit.jl` replaces the equilibrium / periodic continuation role
-- `Plots.jl` handles diagnostic and presentation figures
+- `OrdinaryDiffEq.jl`：承担 stiff IVP 积分
+- `BifurcationKit.jl`：承担平衡点和分岔 continuation
+- `Plots.jl`：负责图像输出
 
-The practical numerical lessons still carry over:
+虽然工具换成了 Julia，但数值原则不变：
 
-- small `epsilon` makes the IVP stiff
-- smooth approximations are preferable to hard `min` or positive-part kinks
-- coarse parameter sweeps can easily miss narrow canard windows
-- continuation and direct simulation should be used together rather than as
-  substitutes
+- 小 `epsilon` 会使系统 stiff
+- `min` 和正部函数最好先光滑化
+- 只靠粗网格扫参数很容易漏掉 canard window
+- continuation 和直接积分必须结合起来看，而不是只做其中之一
 
-## Main Model
+## 三、主模型
 
-The baseline object is a smooth `4D` system with:
+当前主模型是一个光滑化的 `4D` 系统，变量为：
 
-- `d`: doer share, fast variable
-- `q`: supervision / integration backlog, intermediate variable
-- `k`: adoption capital, slow variable
-- `h`: judgment capital, slow variable
+- `d`：doer 份额，快变量
+- `q`：监督 / 集成负担，中间尺度变量
+- `k`：adoption capital，慢变量
+- `h`：judgment capital，慢变量
 
-The model preserves the core economic ideas:
+这个模型保留了研究里最关键的经济含义：
 
-- an advisor frontier
-- a doer frontier
-- a middle band between them
-- supervision burden from rollout
-- adoption capital accumulated through repeated use
-- judgment capital accumulated or eroded depending on oversight quality
+- advisor frontier
+- doer frontier
+- middle band
+- rollout 带来的监督负担
+- adoption capital 的积累
+- judgment capital 的积累与侵蚀
 
-### Smooth Components
+### 1. 光滑化
 
-To avoid hard nonsmooth corners:
+为了避免硬拐角，模型里用两类光滑函数：
 
-- `smin_sigma(x, y)` approximates `min(x, y)`
-- `softplus_sigma(r)` approximates `max(r, 0)`
+- `smin_sigma(x, y)` 近似 `min(x, y)`
+- `softplus_sigma(r)` 近似 `max(r, 0)`
 
-These enter the code in
+它们直接写在
 [double_frontier_rollout.jl](/Users/wangxq/Documents/AUTO/scripts/double_frontier_rollout.jl)
-so that continuation and stiff integration remain well behaved.
+里，作用就是让 continuation 和 stiff 积分更稳定。
 
-### Frontiers and Coverage
+### 2. 前沿与覆盖率
 
-The model contains three central nonlinear pieces:
+主模型里有三个最核心的非线性对象：
 
 1. advisor frontier `a(h)`
-2. supervision coverage `phi(h, q)`
-3. doer target `d_star(d, q, k, h)`
+2. 监督覆盖率 `phi(h, q)`
+3. doer 目标份额 `d_star(d, q, k, h)`
 
-The economic interpretation is:
+经济含义可以概括成：
 
-- higher `z`, `G`, and `h` expand the advisor frontier
-- higher `G` and `h` improve supervision coverage
-- higher `E`, `k`, and short-run feedback `beta_n` raise doer pressure
-- larger backlog `q` pushes back against further rollout
+- `z`、`G`、`h` 越高，advisor frontier 越往右
+- `G`、`h` 越高，监督覆盖率越好
+- `E`、`k`、短期反馈 `beta_n` 越高，doer 推进压力越强
+- backlog `q` 越大，对进一步 rollout 的抑制越强
 
-## Reduced Models
+## 四、三套 reduced model
 
-Three nested systems guide the project.
+整个项目始终围绕三套嵌套系统展开。
 
-### 2D model
+### 1. 2D 模型
 
-Fix `k = kbar` and `h = hbar`, then study `(d, q)`.
+固定 `k = kbar`、`h = hbar`，研究 `(d, q)`。
 
-This is the first screening layer for:
+这是最先做筛查的层次，用来判断：
 
-- S-shaped critical manifolds
-- fold-like structure
-- Hopf candidates
-- hysteresis
-- canard-like sharp amplitude jumps
-- relaxation oscillations
+- 临界流形是否 S 形
+- 是否存在 fold-like 结构
+- 是否出现 Hopf 候选
+- 是否有迟滞和双稳态
+- 是否存在 canard-like 振幅跳变
+- 是否进入 relaxation oscillation
 
-### 3D model
+### 2. 3D 模型
 
-Fix `k = kbar`, then study `(d, q, h)`.
+固定 `k = kbar`，研究 `(d, q, h)`。
 
-This is the first layer where folded singularities and MMO can appear in a way
-that matches the standard slow-fast geometry literature.
+这是第一次可能出现 folded singularity 和 MMO 的层次，也是后面几何分析最重要的过渡模型。
 
-### 4D model
+### 3. 4D 模型
 
-Use the full system only after the reduced structure is already mapped.
+完整的 `4D` 系统只在低维结构已经看清楚以后再重点使用。
 
-This layer is mainly for:
+这一层主要关心：
 
 - rollout waves
-- long-memory effects from `(k, h)`
-- bursting-style slow passage between quiet and oscillatory regimes
+- `(k, h)` 带来的长记忆效应
+- quiet phase 与 oscillatory phase 之间的慢切换
+- bursting
 
-## Parameter Box
+## 五、参数盒
 
-The project uses a numerical exploration box rather than an empirical
-calibration.
+当前项目使用的是“数值勘探参数盒”，不是经验校准。
 
-### Baseline values
+### 1. 基础值
 
-Suggested baseline values in the planning stage were:
+计划中建议的基础值包括：
 
 - `lambda_A = 8`
 - `alpha0 = -1`
@@ -141,9 +132,9 @@ Suggested baseline values in the planning stage were:
 - `omega_h = 1`
 - `omega_q = 1.5`
 
-### First-pass scan parameters
+### 2. 第一轮重点扫描参数
 
-The most important early scan parameters are:
+最重要的扫描参数是：
 
 - `beta_n`
 - `lambda_D`
@@ -155,236 +146,222 @@ The most important early scan parameters are:
 - `epsilon`
 - `eta_h`
 
-Additional discrete choices of interest:
+同时还需要考虑一些离散设定：
 
 - `rho in {1.5, 2, 3}`
 - `chi_I in {0, 0.5, 1}`
 - `sigma in {20, 50, 100, 200}`
 
-### Default initial conditions
+### 3. 默认初值
 
-The baseline initial state is:
+建议的基础初值是：
 
 - `d(0) = 0.05`
 - `q(0) = 0`
 - `k(0) = 0.1`
 - `h(0) = 0.6`
 
-High-adoption and low-adoption alternatives are also essential for testing
-bistability.
+除此之外，还必须加入高采用和低采用初值，用来检验双稳态。
 
-## Experimental Roadmap
+## 六、实验路线
 
-The numerical plan is staged deliberately.
+整个数值路线是分层推进的。
 
-### Experiment 0: numerical stability check
+### 实验 0：数值稳定性检查
 
-Purpose:
+目的：
 
-- make sure smoothing does not create fake dynamics
-- make sure tolerance choices are not driving conclusions
-- make sure the stiff solver is behaving credibly
+- 确认平滑化没有制造虚假的动力学
+- 确认结论不是容差幻觉
+- 确认 stiff solver 工作正常
 
-Outputs:
+输出：
 
-- time series under multiple tolerances
-- phase portraits under multiple `sigma`
+- 不同容差下的时序图
+- 不同 `sigma` 下的相图
 - solver diagnostics
 
-### Experiment 1: baseline region without fold
+### 实验 1：无 fold 的基线区
 
-Purpose:
+目的：
 
-- confirm what the model looks like when `beta_n` is very small
-- separate ordinary slow-manifold adjustment from genuine nonlinear geometry
+- 先看 `beta_n` 很小时模型是否只是普通慢流形调整
+- 把真正的非线性几何与简单的滞后区分开
 
-Outputs:
+输出：
 
-- `2D` phase portraits
+- `2D` 相图
 - nullclines
-- equilibrium continuation in `E`
+- 对 `E` 的平衡点 continuation
 
-### Experiment 2: analytic fold pre-screen
+### 实验 2：fold 前置筛查
 
-Ignoring the advisor cap locally, the reduced equilibrium relation suggests the
-necessary condition
+在忽略 advisor cap 的局部近似下，logistic 情形给出一个非常有用的必要条件：
 
 `beta_n * lambda_D > 4`
 
-for fold potential in the logistic case.
+目的：
 
-Purpose:
+- 在进入大规模数值扫描前，先缩小参数空间
 
-- shrink the parameter search space before brute-force scanning
+输出：
 
-Outputs:
+- 理论上的 fold 可行区
+- 数值上的三平衡点区域
+- 代表性的临界流形
 
-- theoretical fold-viability map
-- numerical three-equilibrium regions
-- representative critical manifolds
+### 实验 3：advisor cap 是否剪掉 S 形
 
-### Experiment 3: advisor cap clipping
+目的：
 
-Purpose:
+- 检查 advisor frontier 是否会直接截断 reduced model 的右支
+- 证明双前沿结构确实改变了系统拓扑，而不仅仅是换了记账方式
 
-- test whether the advisor frontier truncates the right branch of the reduced
-  S-shape
-- show that the double-frontier structure changes topology, not just accounting
+输出：
 
-Outputs:
+- cap 与 fold 位置的比较
+- `(G, h)` 区域图
+- 被剪掉和未被剪掉时的相图对比
 
-- cap-versus-fold comparisons
-- `(G, h)` region maps
-- clipped versus unclipped phase portraits
+### 实验 4：双稳态与迟滞
 
-### Experiment 4: bistability and hysteresis
+目的：
 
-Purpose:
+- 先拿下最稳健、最容易站住脚的动力学结论
 
-- establish the most robust nonlinear phenomenon first
+输出：
 
-Outputs:
+- 单参数 continuation 分支
+- 前向 / 后向 sweep
+- 高低初值收敛对比
 
-- continuation branches in `E`
-- forward/backward sweeps
-- low/high initial condition comparisons
+### 实验 5：Hopf 与极限环
 
-### Experiment 5: Hopf and periodic orbits
+目的：
 
-Purpose:
+- 判断 reduced model 是否真的有周期解
 
-- determine whether the reduced model supports genuine oscillations
+输出：
 
-Outputs:
+- Hopf 检测
+- 极限环 continuation
+- 极值包络与周期图
 
-- Hopf detection
-- periodic branch continuation
-- extrema and period plots
+### 实验 6：canard window 精扫
 
-### Experiment 6: narrow canard window
+目的：
 
-Purpose:
+- 判断系统是否存在“极小振幅振荡在极窄窗口中突然放大成大振幅松弛震荡”的现象
 
-- test whether the model shows a sharp transition from very small oscillations
-  to large relaxation cycles over a narrow interval
+输出：
 
-Outputs:
+- 局部放大的振幅图
+- 局部放大的周期图
+- 小振幅 / canard-like / 大振幅周期轨对比
 
-- zoomed amplitude plots
-- zoomed period plots
-- representative small / canard-like / large-cycle trajectories
+### 实验 7：relaxation oscillation
 
-### Experiment 7: relaxation oscillations
+目的：
 
-Purpose:
+- 描述 canard window 之后的大振幅周期几何
 
-- characterize the geometry after the jump window
+输出：
 
-Outputs:
+- 大振幅周期的相图
+- 快跳与慢漂移并存的时序图
 
-- large-cycle phase portraits
-- time series with slow drift and fast jumps
+### 实验 8：3D folded singularity 与 MMO
 
-### Experiment 8: folded singularities and MMO in 3D
+目的：
 
-Purpose:
+- 判断 `(d, q, h)` reduction 里是否真的存在 folded-node-type 的几何组织机制
 
-- determine whether the `(d, q, h)` reduction contains folded-node-type
-  organization
+输出：
 
-Outputs:
+- fold curve
+- folded singularity 条件检查
+- 长时序图
+- SAO 计数图
 
-- fold curves
-- folded singularity checks
-- long time series
-- SAO counting plots
+### 实验 9：4D bursting
 
-### Experiment 9: bursting in 4D
+目的：
 
-Purpose:
+- 理解 `(k, h)` 的慢漂移怎样把系统带入和带出振荡区
 
-- understand how slow drift in `(k, h)` moves the system through fast-subsystem
-  regimes
+输出：
 
-Outputs:
+- 长窗口 `4D` 时序图
+- `(k, h)` 慢变量轨道
+- fast-subsystem skeleton 与 full trajectory 投影
 
-- long-run `4D` trajectories
-- `(k, h)` slow-drift plots
-- fast-subsystem skeleton overlays
+### 实验 10：middle band 的不可替代性
 
-### Experiment 10: middle-band irreducibility
+目的：
 
-Purpose:
+- 说明相同的最终 doer 份额，不同 rollout 路径也可能积累出完全不同的 `k` 和 `h`
 
-- show that two rollout paths with similar final doer share can generate
-  different `k` and `h` histories
+输出：
 
-Outputs:
+- 路径比较时序图
+- `m-h` 图
+- `m-k` 图
+- matched-final-`d` 比较图
 
-- path-comparison time series
-- `m-h` and `m-k` plots
-- matched-final-`d` comparisons
+## 七、图像与现象的对应关系
 
-## Figure Logic
+不同图不是重复，而是分别回答不同问题：
 
-Each figure family answers a different question.
+- 时间序列图：看快跳、慢漂移、overshoot、bursting
+- `(d, q)` 相图：看 nullcline、fold、Hopf 前后周期轨、relaxation loop
+- 临界流形图：看 S 形、fold、cap clipping
+- 单参数 continuation 图：看双稳态、迟滞、Hopf、周期包络
+- 双参数 continuation 图：看 fold / Hopf 边界
+- 局部放大振幅图：看 canard window
+- fold curve 与 folded singularity 图：看 MMO 的几何骨架
+- 峰值返回图 / SAO 计数图：看 MMO 模式
+- fast skeleton + full trajectory：看 bursting 的组织机制
 
-- Time series: jumps, drift, overshoot, bursting
-- `(d, q)` phase portraits: nullclines, folds, cycles, relaxation loops
-- Critical-manifold plots: S-shape and cap clipping
-- Single-parameter continuation: hysteresis, Hopf, periodic envelopes
-- Two-parameter continuation: fold and Hopf boundaries
-- Zoomed amplitude plots: canard-window evidence
-- Fold-curve and folded-singularity plots: MMO geometry
-- Peak-return or SAO-count plots: MMO patterning
-- Fast-skeleton plus full-trajectory overlays: bursting organization
+## 八、止损规则
 
-## Stop-Loss Rules
+这些规则和实验本身同样重要。
 
-These rules matter as much as the experiments themselves.
+1. 如果在合理参数盒里始终找不到 fold，就不要继续追 canard 或 MMO，直接转向慢流形、路径依赖和 tipping。
+2. 如果有 fold，但没有可靠的 Hopf 或周期轨，就主打迟滞和多稳态，而不是强卖 canard。
+3. 如果 `2D` 里有 canard-like 行为，但 `3D` 里没有 folded singularity，就把数学主线定位在二维 canard / relaxation paper。
+4. 只有在高维证据非常明确时，才把 MMO 或 bursting 写进题目和摘要。
 
-1. If no fold appears in a reasonable parameter box, stop chasing canards or
-   MMO and pivot to slow-manifold / path-dependence / tipping.
-2. If folds appear but no reliable Hopf or periodic branch appears, emphasize
-   hysteresis and multistability instead of forcing a canard story.
-3. If `2D` canard-like behavior appears but `3D` has no folded singularity
-   structure, frame the math contribution as a planar canard / relaxation paper.
-4. Only talk about MMO or bursting in titles or abstracts if the higher
-   dimensional evidence is unambiguous.
+## 九、可能的论文路线
 
-## Recommended Paper Routes
+按结果不同，论文方向也不同：
 
-Depending on what the numerics ultimately show:
+- 如果只看到慢流形、迟滞或 tipping：
+  更适合经济学理论文
+- 如果看到 fold + canard-like onset + relaxation oscillation：
+  可以写 `2D` 应用数学文
+- 如果看到 folded node + MMO：
+  这是最强的应用数学主线
+- 如果明确看到 bursting：
+  可以作为长文后半部，或者拆成第二篇
 
-- only slow manifolds, hysteresis, or tipping:
-  economic theory paper
-- fold plus canard-style onset plus relaxation oscillations:
-  `2D` applied-math paper
-- folded node plus MMO:
-  strongest applied-math route
-- clear bursting:
-  long-form paper or second paper
+## 十、当前仓库所处位置
 
-## Current Repository Position
+当前代码库还处在这条路线的前半段：
 
-The current codebase is still at the early part of this roadmap.
+- `2D` reduced system 已经实现，并可直接做 continuation
+- `4D` 系统已经实现，可用于代表性仿真
+- 部分参数区已经能看到较强的路径依赖
+- canard / relaxation 的搜索仍然处于探索阶段，还不能当作最终结论
 
-- the `2D` reduced system is implemented and continuation-ready
-- the `4D` system is implemented for representative simulations
-- strong path dependence is already visible in selected regions
-- canard / relaxation search is still exploratory rather than definitive
+所以现在的仓库更适合被理解为一个认真搭建好的数值研究 scaffold，而不是已经完成证明或论文封装的最终版本。
 
-That means the present repository should be read as a serious numerical
-exploration scaffold, not yet as a final theorem-or-paper package.
+## 十一、参考说明
 
-## Source Notes
+最初的规划讨论引用过几类经典资料：
 
-The planning discussion referenced the following sources as background:
+- [SciPy `solve_ivp` 文档](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html)
+- [Guckenheimer / MMO 综述](https://pi.math.cornell.edu/~gucken/PDF/mmo_review.pdf)
+- [AUTO-07P 概览](https://archive-dsweb.siam.org/Software/auto-07p.html)
+- [canard explosion 参考条目](https://www.researchgate.net/publication/247384460_Relaxation_Oscillation_and_Canard_Explosion?utm_source=chatgpt.com)
 
-- [SciPy `solve_ivp` documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html)
-- [Guckenheimer / MMO review](https://pi.math.cornell.edu/~gucken/PDF/mmo_review.pdf)
-- [AUTO-07P overview](https://archive-dsweb.siam.org/Software/auto-07p.html)
-- [Canard explosion reference note](https://www.researchgate.net/publication/247384460_Relaxation_Oscillation_and_Canard_Explosion?utm_source=chatgpt.com)
-
-These are preserved here as planning references. The repository implementation
-itself is Julia-based.
+这些资料在这里保留为研究背景参考。仓库本身的实现已经全部切换为 Julia。
