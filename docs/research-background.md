@@ -53,80 +53,80 @@
 
 #### 光滑化函数
 
-```math
+$$
 \operatorname{smin}_{\sigma}(x,y)
 =-\frac{1}{\sigma}\log\left(e^{-\sigma x}+e^{-\sigma y}\right),
 \qquad \sigma \gg 1
-```
+$$
 
-```math
+$$
 P_{\sigma}(r)
 =\frac{1}{\sigma}\log\left(1+e^{\sigma r}\right),
 \qquad \sigma \gg 1
-```
+$$
 
 它们分别近似：
 
-- `\min(x,y)`
-- `r^+ = \max(r,0)`
+- \(\min(x,y)\)
+- \(r^+ = \max(r,0)\)
 
 #### advisor frontier
 
-```math
+$$
 a(h)=F_A(\alpha_0+\alpha_z z+\alpha_h h+\alpha_G G)
-```
+$$
 
-```math
+$$
 F_A(s)=\frac{1}{1+e^{-\lambda_A(s-c_A)}}
-```
+$$
 
 #### supervision coverage
 
-```math
+$$
 \phi(h,q)=\frac{1}{1+\exp[-(\omega_0+\omega_G G+\omega_h h-\omega_q q)]}
-```
+$$
 
 #### doer 目标份额
 
-```math
+$$
 d^\star(d,q,k,h)
 =
 \operatorname{smin}_{\sigma}\left(
 F_D(\theta_0+\theta_z z+\theta_h h+\theta_G G+\theta_E E+\theta_k k+\theta_{\phi}\phi(h,q)-\gamma q+\beta_n d),
 \ a(h)
 \right)
-```
+$$
 
-```math
+$$
 F_D(s)=\frac{1}{1+e^{-\lambda_D(s-c_D)}}
-```
+$$
 
 #### 完整的 4D 动态系统
 
-```math
+$$
 \varepsilon \dot d = d^\star(d,q,k,h)-d
-```
+$$
 
-```math
+$$
 \dot q
 =
 \chi_I P_\sigma(d^\star-d)
-\chi_R d^\rho
++\chi_R d^\rho
 -(\nu_0+\nu_G G+\nu_h h)q,
 \qquad \rho>1
-```
+$$
 
-```math
+$$
 \dot k
 =
 \eta_k\left[
 \psi_M P_\sigma(a(h)-d)
-\psi_D \phi(h,q)d
++\psi_D \phi(h,q)d
 -\delta_k k
 \right]
-```
+$$
 
-```math
+$$
 \dot h
 =
 \eta_h\left[
@@ -134,7 +134,7 @@ F_D(s)=\frac{1}{1+e^{-\lambda_D(s-c_D)}}
 -
 (\mu_0+\mu_1(1-\phi(h,q))d)h
 \right]
-```
+$$
 
 这组方程就是仓库里 `4D` 主模型的数学原型。
 
@@ -174,17 +174,17 @@ F_D(s)=\frac{1}{1+e^{-\lambda_D(s-c_D)}}
 
 对应的 reduced system 写成：
 
-```math
+$$
 \varepsilon \dot d = d^\star(d,q;\bar k,\bar h)-d
-```
+$$
 
-```math
+$$
 \dot q
 =
 \chi_I P_\sigma(d^\star-d)
-\chi_R d^\rho
++\chi_R d^\rho
 -(\nu_0+\nu_G G+\nu_h \bar h)q
-```
+$$
 
 这是最先做筛查的层次，用来判断：
 
@@ -201,17 +201,17 @@ F_D(s)=\frac{1}{1+e^{-\lambda_D(s-c_D)}}
 
 对应的 reduced system 可以记成：
 
-```math
+$$
 \varepsilon \dot d = d^\star(d,q,\bar k,h)-d
-```
+$$
 
-```math
+$$
 \dot q = g(d,q,h)
-```
+$$
 
-```math
+$$
 \dot h = \tilde{\eta}_h H(d,q,h)
-```
+$$
 
 这是第一次可能出现 folded singularity 和 MMO 的层次，也是后面几何分析最重要的过渡模型。
 
