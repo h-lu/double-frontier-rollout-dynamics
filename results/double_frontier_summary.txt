@@ -1,0 +1,17 @@
+Double-frontier rollout model: Julia reduced-model workflow
+Continuation parameter: E in [0.00, 2.00]
+Theoretical fold screen: beta_n * lambda_D = 40.0000
+Advisor cap at hbar = 0.650: a(hbar) = 0.999998
+
+Fold/branch-point candidate (bp) detected near E ≈ 1.2116721025
+Hopf detected near E ≈ 0.9772856335
+Periodic-orbit continuation: not run because no robust Hopf point was available
+
+Largest low/high branch gap in direct sweeps = 0.989339
+Representative 2D amplitude at E = 1.057: d_amp = 0.000000, q_amp = 0.000000
+Representative 4D amplitude at E = 1.050, G = 1.100: d_amp = 0.991315, q_amp = 0.868864
+
+Interpretation:
+- The script keeps the full 4D model available, but starts with the 2D reduced system for fold/Hopf screening.
+- Theoretical fold viability is controlled by beta_n * lambda_D > 4, matching the analytic pre-screen in the plan.
+- Direct low/high-initial-condition sweeps provide a Julia-native hysteresis check before moving to deeper MMO or bursting studies.

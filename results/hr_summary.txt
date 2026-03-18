@@ -1,0 +1,13 @@
+Hindmarsh-Rose 3-variable slow-fast analysis
+Hopf point in I ≈ 1.3587113854
+Sweep points = 16
+Regime counts: rest = 2, bursting = 10, tonic spiking = 4
+
+Representative rest: I = 1.00, amplitude = 0.000000
+Representative bursting: I = 2.80, amplitude = 3.247525, max gap = 84.55, mean spikes/burst = 4.00
+Representative tonic spiking: I = 4.00, amplitude = 2.604634, max gap = 20.15
+
+Interpretation:
+- The equilibrium branch loses stability at the Hopf point as I increases.
+- Just beyond that loss of stability the model exhibits pronounced bursting.
+- For larger I the silent intervals collapse and the system settles into tonic spiking.
