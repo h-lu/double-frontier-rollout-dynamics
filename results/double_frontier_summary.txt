@@ -5,13 +5,61 @@ Advisor cap at hbar = 0.650: a(hbar) = 0.999998
 
 Fold/branch-point candidate (bp) detected near E ≈ 1.2116721025
 Hopf detected near E ≈ 0.9772856335
-Periodic-orbit continuation: not run because no robust Hopf point was available
+Periodic-orbit continuation points saved = 460
+Periodic-orbit parameter span: E in [0.9744884922, 0.9753187708]
+Periodic-orbit d-amplitude span: [1.899259e-12, 9.118387e-01]
+Detected 10 unique period-doubling point(s) on the extended periodic branch
+- pd near E ≈ 0.9753170931 [idx = 379, status = converged]
+- pd near E ≈ 0.9753172079 [idx = 324, status = converged]
+- pd near E ≈ 0.9753172439 [idx = 303, status = converged]
+- pd near E ≈ 0.9753172519 [idx = 185, status = converged]
+- pd near E ≈ 0.9753172579 [idx = 219, status = converged]
+- pd near E ≈ 0.9753172597 [idx = 210, status = converged]
+- pd near E ≈ 0.9753173067 [idx = 241, status = converged]
+- pd near E ≈ 0.9753173742 [idx = 287, status = converged]
+- pd near E ≈ 0.9753177082 [idx = 392, status = converged]
+- pd near E ≈ 0.9753187075 [idx = 452, status = converged]
+
+Refined Hopf point from minimally augmented Newton: E ≈ 0.9747525391
+Refined Hopf frequency: |ω| ≈ 6.7955098198, period ≈ 0.9246083773
+Hopf normal-form type: SubCritical
+Hopf normal-form coefficient a ≈ -3.601422e+02 -1.507574e+01i
+Hopf normal-form coefficient b ≈ 9.487422e+03 -5.536600e+04i
 
 Largest low/high branch gap in direct sweeps = 0.989339
 Representative 2D amplitude at E = 1.057: d_amp = 0.000000, q_amp = 0.000000
-Representative 4D amplitude at E = 1.050, G = 1.100: d_amp = 0.991315, q_amp = 0.868864
+
+3D fold/branch-point candidate (bp) near E ≈ 0.9839955747
+3D Hopf near E ≈ 1.6729540451
+Largest 3D low/high mean-d gap in direct sweeps = 0.015327
+Largest 3D low/high mean-h gap in direct sweeps = 0.002066
+3D Hopf-neighborhood oscillation-collapse window: E ≈ 1.6557040451 -> 1.6579540451
+3D oscillatory-regime return time span: [71.907883, 181.399965]
+3D oscillatory-regime max period CV = 0.012466
+3D oscillatory-regime max mid-band occupancy = 0.001400
+Best targeted 3D MMO-search candidate: epsilon = 0.0100, eta_h = 0.0020, E = 1.512954, score = 0.108076, d_amp = 0.991320, h_amp = 0.066610, period CV = 0.043549, subcycle CV = 0.043547, mid-band occupancy = 0.000100, crossing ratio = 1.000000
+Representative 3D amplitude at E = 1.167: d_amp = 0.991335, q_amp = 0.763701, h_amp = 0.216593
+Best sustained 4D candidate at E = 0.900, G = 1.000: d_amp = 0.991305, q_amp = 0.851336, k_amp = 0.074155, h_amp = 0.032070
+4D candidate return-time CV = 0.007991, middle-band occupancy = 0.001978
+Best targeted 4D burst-search candidate: eta_h = 0.0020, eta_k = 0.0030, E = 1.050, G = 0.900, score = 0.506682, d_amp = 0.991259, k_amp = 0.007262, h_amp = 0.005543, inter-burst CV = 0.127707, burst-width CV = 0.164907, mid-band occupancy = 0.003022, crossing ratio = 1.000000
+Best 4D geometry-search candidate: theta0 = -4.900, beta_n = 1.500, E = 1.070, score = 2.563582, d_amp = 0.991306, k_amp = 0.003868, h_amp = 0.002961, inter-burst CV = 0.703592, burst-width CV = 0.782510, mid-band occupancy = 0.002044, crossing ratio = 1.000000
+Long-window diagnostic at the geometry-search candidate: inter-burst CV = 0.703592, burst-width CV = 0.782510, mid-band occupancy = 0.002044, crossing ratio = 1.000000
+4D alternation diagnostic: odd/even period means = [5.050674, 28.845005], odd/even width means = [27.058366, 3.372802], lag-1 correlations = [period -0.999970, width -0.995559], normalized alternation gaps = [period 1.405833, width 1.554386]
 
 Interpretation:
 - The script keeps the full 4D model available, but starts with the 2D reduced system for fold/Hopf screening.
 - Theoretical fold viability is controlled by beta_n * lambda_D > 4, matching the analytic pre-screen in the plan.
 - Direct low/high-initial-condition sweeps provide a Julia-native hysteresis check before moving to deeper MMO or bursting studies.
+- A refined Hopf solve plus multi-stage two-point periodic-orbit continuation now resolves a long subcritical branch beyond the immediate Hopf neighborhood.
+- The extended branch reaches O(1) d-amplitude and encounters a period-doubling point, so the 2D story is no longer just 'Hopf then black-box jump': the large-cycle regime is connected to a concrete periodic-orbit backbone.
+- The new 3D workflow checks whether that 2D geometry survives once judgment capital h becomes dynamic, using equilibrium continuation plus direct low/high-initial-condition scans.
+- In the 3D Hopf neighborhood, large-amplitude oscillations persist below the Hopf point and collapse before/around it, indicating a strongly subcritical transition with a coexistence window rather than a gentle small-cycle onset.
+- Across the sampled 3D oscillatory regime, threshold-crossing return times stay regular and the orbit spends almost no time in the middle band 0.2 < d < 0.9, which is more consistent with a single relaxation cycle than with MMO-style mixed small/large oscillations.
+- A targeted 3D search over smaller epsilon and slower eta_h still fails to produce a strong MMO signature: the best candidate keeps low return-time variability, near-unit threshold-crossing ratio, and little middle-band dwell time.
+- In 4D, sustained oscillations survive after long transients mainly at lower G; the earlier large-amplitude example at G = 1.1 was a transient, not a settled bursting state.
+- The best sustained 4D candidate found here still has low return-time variability and low middle-band occupancy, so it also looks like a regular relaxation cycle rather than bursting.
+- The 4D targeted search surfaces a parameter patch with elevated burst score; that patch should be the next priority for longer integrations and slow-fast analysis.
+- A geometry-focused 4D search over theta0 and beta_n reveals a much stronger burst-like modulation regime than the eta_h/eta_k sweep alone, with large inter-cycle and burst-width variability concentrated near lower beta_n and more negative theta0.
+- Even at that stronger 4D modulation candidate, the orbit still behaves like one large excursion per cycle rather than mixed small/large oscillations, so the current evidence supports irregular envelope modulation rather than fully developed bursting.
+- Event-level diagnostics show an almost perfectly alternating long/short sequence in both inter-burst periods and burst widths, which is more consistent with a period-2-like relaxation pattern than with stochastic or weakly modulated variability.
+- Floquet-based stability labels on the outer branch should still be treated cautiously because the eigensolver emits missing-conjugate-pair warnings during continuation.

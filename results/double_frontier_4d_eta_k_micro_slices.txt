@@ -1,0 +1,92 @@
+4D eta_k micro-slices through representative micro-window points
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- beta_n = 1.5
+- tmax = 12000
+- transient = 6000
+- saveat = 0.25
+
+Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Representative cuts:
+1. island_A:
+   - theta0 = -4.84
+   - E = 1.0470
+   - eta_k = 0.0027:0.00002:0.0033
+
+2. stripe_B:
+   - theta0 = -4.8300
+   - E = 1.0281
+   - eta_k = 0.0027:0.00002:0.0033
+
+island_A results:
+- Strong windows:
+  - [0.00272, 0.00286]
+  - [0.00298, 0.00300]
+- Weak windows:
+  - [0.00270, 0.00270]
+  - [0.00292, 0.00296]
+  - [0.00302, 0.00302]
+  - [0.00306, 0.00330]
+
+Representative values:
+- eta_k = 0.00272 -> burst = 1.829374, p2 = 3.028977
+- eta_k = 0.00286 -> burst = 1.630268, p2 = 2.609398
+- eta_k = 0.00292 -> burst = 0.273207, p2 = 1.934194
+- eta_k = 0.00300 -> burst = 1.783834, p2 = 3.006240
+- eta_k = 0.00302 -> burst = 0.256489, p2 = 1.689268
+
+Largest local drops:
+- max burst drop:
+  - eta_k = 0.00300 -> 0.00302
+  - delta = -1.527344
+- max p2 drop:
+  - eta_k = 0.00300 -> 0.00302
+  - delta = -1.316972
+
+Interpretation:
+- The island-like point in (theta0, E) remains highly fragmented in eta_k.
+- It is not a single point in 3D parameter space.
+- Instead it thickens into two short eta_k bands separated by weak gaps.
+
+stripe_B results:
+- Strong windows:
+  - [0.00270, 0.00312]
+  - [0.00318, 0.00324]
+- Weak windows:
+  - [0.00314, 0.00316]
+  - [0.00326, 0.00330]
+
+Representative values:
+- eta_k = 0.00270 -> burst = 2.571986, p2 = 3.470360
+- eta_k = 0.00300 -> burst = 2.490959, p2 = 3.410277
+- eta_k = 0.00312 -> burst = 1.546103, p2 = 2.861342
+- eta_k = 0.00314 -> burst = 0.160430, p2 = 1.227942
+- eta_k = 0.00324 -> burst = 2.608631, p2 = 3.507482
+- eta_k = 0.00326 -> burst = 0.128980, p2 = 1.268638
+
+Largest local drops:
+- max burst drop:
+  - eta_k = 0.00324 -> 0.00326
+  - delta = -2.479651
+- max p2 drop:
+  - eta_k = 0.00324 -> 0.00326
+  - delta = -2.238844
+
+Interpretation:
+- The stripe-like set in (theta0, E) also persists across eta_k, but with sharp holes.
+- It behaves like a thin 3D slab broken by narrow eta_k gaps, not like a smooth solid block.
+
+Overall conclusion:
+- The fragmented period-2 region is not confined to the theta0-E plane.
+- Along eta_k it remains structured into bands and holes.
+- So the strongest current picture is:
+  a high-dimensional fractured set made of thin slabs, stripes, and micro-islands, rather than a simple smooth continuation surface.
+- This strengthens the interpretation that the large-amplitude period-2 relaxation regime survives on an intricate parameter scaffold, while weaker alternating remnants occupy the nearby gaps.

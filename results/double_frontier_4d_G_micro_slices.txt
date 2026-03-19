@@ -1,0 +1,92 @@
+4D G micro-slices through representative fragmented period-2 states
+Date: 2026-03-19
+
+Base parameters:
+- epsilon = 0.01
+- eta_h = 0.002
+- beta_n = 1.5
+- tmax = 12000
+- transient = 6000
+- saveat = 0.25
+
+Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Representative cuts:
+1. island_A_G
+   - theta0 = -4.84
+   - E = 1.0470
+   - eta_k = 0.00300
+   - G = 0.995:0.0005:1.005
+
+2. stripe_B_G
+   - theta0 = -4.83
+   - E = 1.0281
+   - eta_k = 0.00324
+   - G = 0.995:0.0005:1.005
+
+island_A_G results:
+- Strong windows:
+  - [0.9950, 0.9950]
+  - [0.9960, 0.9975]
+  - [0.9985, 0.9985]
+  - [1.0000, 1.0000]
+- Weak windows:
+  - [0.9955, 0.9955]
+  - [0.9990, 0.9990]
+  - [1.0005, 1.0050]
+
+Representative values:
+- G = 0.9950 -> burst = 2.590629, p2 = 3.489089
+- G = 0.9955 -> burst = 0.202848, p2 = 1.767358
+- G = 0.9985 -> burst = 1.807360, p2 = 3.011629
+- G = 1.0000 -> burst = 1.783834, p2 = 3.006240
+- G = 1.0005 -> burst = 0.223672, p2 = 1.906880
+
+Largest local drops:
+- max burst drop:
+  - G = 0.9950 -> 0.9955
+  - delta = -2.387781
+- max p2 drop:
+  - G = 1.0030 -> 1.0035
+  - delta = -1.884314
+
+Interpretation:
+- The island-like state remains fragmented along G.
+- It survives on several short G segments separated by sharp weak gaps.
+
+stripe_B_G results:
+- Strong windows:
+  - [0.9965, 1.0000]
+- Weak windows:
+  - [0.9955, 0.9960]
+  - [1.0005, 1.0050]
+
+Representative values:
+- G = 0.9965 -> burst = 2.569520, p2 = 3.483031
+- G = 1.0000 -> burst = 2.608631, p2 = 3.507482
+- G = 1.0005 -> burst = 0.469345, p2 = 1.976395
+- G = 1.0030 -> burst = 0.126267, p2 = 0.961686
+
+Largest local drops:
+- max burst drop:
+  - G = 1.0000 -> 1.0005
+  - delta = -2.139287
+- max p2 drop:
+  - G = 1.0000 -> 1.0005
+  - delta = -1.531086
+
+Interpretation:
+- The stripe-like state becomes a thin G slab, but still with abrupt collapse at its edge.
+- In this cut it looks cleaner than the theta0 and E micro-slices, but it is still not a smooth broad region.
+
+Overall conclusion:
+- The fragmented large-amplitude period-2 regime persists in the fourth parameter direction G.
+- In local 4D parameter space, the strongest current picture is:
+  a fractured scaffold made of short slabs and bands with sharp holes and collapse edges.
+- This further weakens any interpretation based on a smooth continuation surface.
+- The current evidence still supports:
+  strong large-amplitude period-2 windows alternating with weaker residual alternating states,
+  not a transition to higher-period or fully developed bursting.

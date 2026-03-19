@@ -1,0 +1,89 @@
+4D fine E-slices across the fragile period-2 edge
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Method:
+- Fine E-slices with step size 0.001
+- Integration window:
+  - tmax = 14000
+  - transient = 7000
+  - saveat = 0.25
+
+Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Slice A: theta0 = -4.84, E = 1.038:0.001:1.052
+
+Main observations:
+- Strong/large-amplitude period-2 points:
+  - E = 1.038, burst = 1.682463, p2 = 2.971783
+  - E = 1.044, burst = 1.463368, p2 = 2.593060
+  - E = 1.046, burst = 1.483005, p2 = 2.414524
+  - E = 1.047, burst = 1.637558, p2 = 2.937599
+- Weak/small-amplitude points appear immediately next to them:
+  - E = 1.042, burst = 0.161679, p2 = 1.490870
+  - E = 1.048, burst = 0.128806, p2 = 0.874086
+  - E = 1.050, burst = 0.150084, p2 = 1.507025
+  - E = 1.051, burst = 0.151208, p2 = 0.819242
+
+Largest local drops:
+- Max burst drop:
+  - E = 1.047 -> 1.048
+  - delta burst = -1.508751
+- Max p2 drop:
+  - E = 1.047 -> 1.048
+  - delta p2 = -2.063512
+
+Interpretation for theta0 = -4.84:
+- The edge is not a smooth taper.
+- The strong period-2 state turns on and off over very narrow E windows.
+- Around E ≈ 1.042 and E ≈ 1.048-1.051 the branch falls into a much weaker alternating remnant.
+
+Slice B: theta0 = -4.83, E = 1.018:0.001:1.032
+
+Main observations:
+- Strong/large-amplitude period-2 points:
+  - E = 1.018, burst = 2.563953, p2 = 3.468360
+  - E = 1.019, burst = 2.575814, p2 = 3.486883
+  - E = 1.020, burst = 2.584272, p2 = 3.485365
+  - E = 1.022, burst = 2.593181, p2 = 3.491934
+  - E = 1.023, burst = 2.552791, p2 = 3.461742
+  - E = 1.025, burst = 2.591088, p2 = 3.494832
+  - E = 1.027, burst = 2.571664, p2 = 3.477750
+  - E = 1.031, burst = 2.451101, p2 = 3.383019
+  - E = 1.032, burst = 1.777048, p2 = 2.890143
+- But narrow weak windows are interleaved:
+  - E = 1.021, burst = 0.351406, p2 = 2.152231
+  - E = 1.024, burst = 0.141896, p2 = 1.650854
+  - E = 1.026, burst = 0.271563, p2 = 2.073533
+  - E = 1.028, burst = 0.063591, p2 = 1.487693
+  - E = 1.030, burst = 0.396526, p2 = 2.073073
+
+Largest local drops:
+- Max burst drop:
+  - E = 1.027 -> 1.028
+  - delta burst = -2.508073
+- Max p2 drop:
+  - E = 1.027 -> 1.028
+  - delta p2 = -1.990057
+
+Interpretation for theta0 = -4.83:
+- The same pattern is even clearer here.
+- The local edge is fractured into alternating narrow strong and weak windows.
+- Strong large-amplitude period-2 behavior repeatedly re-enters after weak intervals.
+
+Overall conclusion:
+- The fragile corner of the local 4D period-2 tongue is not a single clean threshold.
+- At E-resolution 0.001, it resolves into a narrow-window structure:
+  - strong large-amplitude period-2 windows
+  - interleaved with weak low-amplitude alternating remnants
+- So the upper-right edge behaves more like a fractured or banded transition than a single smooth disappearance line.
+- Within these slices, the evidence still does not point to higher-period or irregular bursting; it points to repeated loss and recovery of the strong period-2 relaxation state across very small parameter changes.

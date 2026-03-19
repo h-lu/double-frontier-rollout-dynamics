@@ -1,0 +1,84 @@
+4D period-2 tongue edge refinement
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Purpose:
+- Refine the upper-right edge of the local period-2 tongue
+- Check whether the branch fades smoothly or loses strength abruptly
+
+Method:
+- Focused spot checks near the fragile corner of the tongue
+- Integration window:
+  - tmax = 12000
+  - transient = 6000
+  - saveat = 0.25
+- Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Representative edge points:
+
+1. theta0 = -4.84, E = 1.04
+- burst = 1.624630
+- p2 = 2.779549
+- period_cv = 0.446472
+- width_cv = 0.492894
+- lag1 = [period -0.994095, width -0.994139]
+- lag2 = [period 0.986058, width 0.986185]
+
+2. theta0 = -4.84, E = 1.05
+- burst = 0.118698
+- p2 = 1.735479
+- period_cv = 0.026062
+- width_cv = 0.041436
+- lag1 = [period -0.987221, width -0.709635]
+- lag2 = [period 0.968363, width 0.702213]
+
+3. theta0 = -4.83, E = 1.02
+- burst = 2.584735
+- p2 = 3.491630
+
+4. theta0 = -4.83, E = 1.03
+- burst = 0.741399
+- p2 = 2.200399
+
+5. theta0 = -4.82, E = 1.05
+- burst = 0.715537
+- p2 = 2.391662
+
+6. theta0 = -4.82, E = 1.06
+- burst = 0.441568
+- p2 = 1.967699
+
+7. theta0 = -4.81, E = 1.06
+- burst = 0.265102
+- p2 = 2.018177
+
+8. theta0 = -4.80, E = 1.02
+- burst = 0.314605
+- p2 = 2.022650
+
+Interpretation:
+- The upper-right edge does not look like a broad smooth taper of the strong period-2 tongue.
+- Instead, the large-amplitude period-2 state can collapse sharply over a small parameter step:
+  - example: theta0 = -4.84, E = 1.04 -> 1.05
+  - burst score drops from 1.624630 to 0.118698
+  - p2 drops from 2.779549 to 1.735479
+- A similar pattern appears at theta0 = -4.83:
+  - E = 1.02 is strongly period-2
+  - E = 1.03 still keeps a period-2 signature, but at much lower amplitude
+- So the edge is best described as:
+  1. a sharp loss of the strong large-amplitude period-2 relaxation state
+  2. often followed by a weaker small-amplitude alternating remnant
+  3. not an obvious transition into higher-period or irregular bursting in the tested points
+
+Working conclusion:
+- The strong tongue does not simply "fade out" continuously everywhere.
+- Near the fragile corner, it often appears to jump from strong large-amplitude period-2 modulation to a weaker residual alternating regime over a very small parameter change.

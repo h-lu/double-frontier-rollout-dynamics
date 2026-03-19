@@ -3,7 +3,7 @@
 本项目研究一个基于 Julia 的慢快动力系统模型，用来刻画组织在 advisor 区、doer 区与中间带之间的动态推进过程。模型同时包含监督负担、采用资本与判断资本三类组织性状态，因此既适合讨论路径依赖与迟滞，也适合进一步探索 canard、松弛振荡、MMO 与爆发振荡等更复杂的动力学机制。
 
 项目的基本策略是：先在低维系统里确认几何结构，再决定是否值得进入更高维、更昂贵的数值分析。完整的研究背景、模型方程、实验路线与止损规则见
-[research-background.md](/Users/wangxq/Documents/AUTO/docs/research-background.md)。
+[docs/research-background.md](/mnt/d/double-frontier-rollout-dynamics/docs/research-background.md)。
 
 ## 研究问题
 
@@ -34,6 +34,7 @@
 
 - `Project.toml` 与 `Manifest.toml`：Julia 环境
 - `docs/research-background.md`：研究背景、完整方程、实验设计与论文路线
+- `docs/stage-results-2026-03-19.md`：截至 `2026-03-19` 的阶段性结果文档
 - `scripts/install_status.jl`：依赖检查
 - `scripts/double_frontier_rollout.jl`：主模型、`2D` 平衡点延拓、迟滞扫描与代表性 `4D` 仿真
 - `scripts/double_frontier_canard_search.jl`：围绕 `2D` canard / 松弛振荡区域的搜索脚本
@@ -48,19 +49,38 @@
 - `double_frontier_hysteresis.png`：低 / 高初值下的迟滞与路径依赖
 - `double_frontier_phase.png`：代表性的 `2D` 相图与时序
 - `double_frontier_full_timeseries.png`：代表性的 `4D` 长时序
+- `double_frontier_hopf_neighborhood.png`：精修 Hopf 点后的局部周期轨延拓
 - `double_frontier_summary.txt`：当前降维模型结果摘要
+- `double_frontier_research_note_2026-03-19.md`：截至 `2026-03-19` 的阶段研究总结
+- `docs/stage-results-2026-03-19.md`：更接近论文结果节写法的正式阶段文档
+- `double_frontier_4d_period2_check.txt`、`double_frontier_4d_period2_boundary.txt`：`4D` 交替大周期的长窗与边界诊断
+- `double_frontier_4d_period2_micro_windows.txt`、`double_frontier_4d_theta_micro_slices.txt`、`double_frontier_4d_eta_k_micro_slices.txt`、`double_frontier_4d_G_micro_slices.txt`：`4D` 局部微窗与高维碎裂结构搜索结果
 
-这些结果说明：部分参数区已经表现出较强的路径依赖，以及 fold / Hopf 候选结构。当前最重要的后续问题是，振荡起始究竟只是进入一个大振幅稳定极限环，还是确实存在 canard 型窄窗口跳变。
+截至当前阶段，更稳的结论已经不只是“存在 fold / Hopf 候选”。现有结果支持这样一条层次化叙述：
+
+- `2D` 已经建立出 `fold + subcritical Hopf + large-cycle backbone`
+- `3D` 主要表现为 `strongly subcritical Hopf + single relaxation cycle`
+- `4D` 当前最强现象是高维碎裂的 `period-2-like relaxation pattern`
+
+也就是说，项目已经从“是否值得研究”推进到“高维复杂结构具体长什么样”，但当前最强证据仍然指向倍周期调制，而不是 classical `MMO` 或 fully developed `bursting`。
 
 ## 运行方式
 
-使用本地 Julia：
+使用本地 Julia。为了让参数扫描真正利用多核，建议显式开启线程：
 
 ```bash
-/Users/wangxq/.local/julia/julia-1.12.5/bin/julia --project=. scripts/install_status.jl
-/Users/wangxq/.local/julia/julia-1.12.5/bin/julia --project=. scripts/double_frontier_rollout.jl
-/Users/wangxq/.local/julia/julia-1.12.5/bin/julia --project=. scripts/double_frontier_canard_search.jl
+julia --threads=auto --project=. scripts/install_status.jl
+julia --threads=auto --project=. scripts/double_frontier_rollout.jl
+julia --threads=auto --project=. scripts/double_frontier_canard_search.jl
 ```
+
+如果希望固定线程数，也可以：
+
+```bash
+JULIA_NUM_THREADS=32 julia --project=. scripts/double_frontier_canard_search.jl
+```
+
+当前仓库里真正适合并行的是参数扫描与独立仿真；`BifurcationKit` 的平衡点延拓仍然按单线程流程运行。
 
 ## 数值工具
 
@@ -70,4 +90,10 @@
 
 ## 当前阶段
 
-当前仓库更接近一个已经搭建好的研究框架，而不是完成版论文代码。现阶段的目标很明确：优先把 `2D` 系统里的几何结构、迟滞区间与振荡起始机制看清楚，再决定是否值得投入 `3D` 折叠奇点、MMO 或 `4D` 爆发振荡。
+当前仓库已经超过“纯框架搭建”阶段，进入了有明确阶段性结论的探索期。当前最合理的项目状态是：
+
+- `2D`：几何骨架已基本建立，可视为低维筛查成功
+- `3D`：确认升维后骨架保留，但没有出现可信 `MMO`
+- `4D`：已发现强的 `period-2-like relaxation` 与碎裂参数骨架，是当前主研究前沿
+
+如果继续推进，最值得做的不是继续大范围盲扫，而是围绕 `4D` 局部参数骨架做更系统的几何解释与结果整理。

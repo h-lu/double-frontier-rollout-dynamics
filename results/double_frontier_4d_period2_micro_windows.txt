@@ -1,0 +1,91 @@
+4D micro-window refinement of the fractured period-2 edge
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Method:
+- Two fine E-slices with step size 1e-4
+- Integration window:
+  - tmax = 12000
+  - transient = 6000
+  - saveat = 0.25
+
+Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Slice A:
+- theta0 = -4.84
+- E = 1.0465:0.0001:1.0485
+
+Strong large-amplitude period-2 windows:
+- [1.0466, 1.0466]
+- [1.0470, 1.0470]
+- [1.0473, 1.0473]
+
+Weak windows:
+- [1.0467, 1.0469]
+- [1.0471, 1.0472]
+- [1.0474, 1.0474]
+- [1.0476, 1.0478]
+- [1.0480, 1.0485]
+
+Representative values:
+- E = 1.0466 -> burst = 1.715988, p2 = 2.963680
+- E = 1.0467 -> burst = 0.137810, p2 = 1.547301
+- E = 1.0470 -> burst = 1.783834, p2 = 3.006240
+- E = 1.0473 -> burst = 1.753827, p2 = 3.007712
+- E = 1.0480 -> burst = 0.111690, p2 = 1.631786
+
+Largest local drops:
+- max burst drop: E = 1.0466 -> 1.0467, delta = -1.578178
+- max p2 drop:    E = 1.0466 -> 1.0467, delta = -1.416379
+
+Interpretation:
+- At theta0 = -4.84, the strong period-2 state is reduced to a few nearly point-like micro-windows at this resolution.
+- The surrounding region is dominated by weak alternating remnants.
+
+Slice B:
+- theta0 = -4.83
+- E = 1.0265:0.0001:1.0285
+
+Strong large-amplitude period-2 windows:
+- [1.0265, 1.0266]
+- [1.0268, 1.0270]
+- [1.0272, 1.0278]
+- [1.0281, 1.0282]
+
+Weak windows:
+- [1.0267, 1.0267]
+- [1.0279, 1.0280]
+- [1.0283, 1.0285]
+
+Representative values:
+- E = 1.0266 -> burst = 2.520347, p2 = 3.435240
+- E = 1.0267 -> burst = 0.276655, p2 = 2.030850
+- E = 1.0275 -> burst = 2.613282, p2 = 3.499447
+- E = 1.0279 -> burst = 0.176890, p2 = 1.679885
+- E = 1.0281 -> burst = 2.490959, p2 = 3.410277
+
+Largest local drops:
+- max burst drop: E = 1.0278 -> 1.0279, delta = -2.405324
+- max p2 drop:    E = 1.0278 -> 1.0279, delta = -1.791455
+
+Interpretation:
+- At theta0 = -4.83, the fractured structure is even clearer.
+- Strong large-amplitude period-2 behavior repeatedly turns off and back on over steps of 1e-4 to 1e-3 in E.
+
+Overall conclusion:
+- The fragile corner of the local 4D period-2 tongue is highly fragmented.
+- At 1e-4 resolution, the strong period-2 regime does not trace a single boundary; it breaks into multiple micro-windows.
+- This is stronger evidence for a banded/fractured transition structure than for one clean codimension-1 disappearance line.
+- Within these micro-slices, the system still alternates between:
+  1. strong large-amplitude period-2 relaxation windows
+  2. weak low-amplitude alternating remnants
+- There is still no direct evidence here of a transition into higher-period or irregular bursting.

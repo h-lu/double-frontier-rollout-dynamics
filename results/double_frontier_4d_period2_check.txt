@@ -1,0 +1,102 @@
+4D long-window period-2 check along the modulation ridge
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Method:
+- Long-window integrations with tmax = 36000, transient = 18000, saveat = 0.25
+- Checked four representative points:
+  1. ridge_peak:  theta0 = -4.90, E = 1.08
+  2. ridge_inner: theta0 = -4.90, E = 1.07
+  3. ridge_end:   theta0 = -4.86, E = 1.05
+  4. boundary:    theta0 = -4.84, E = 1.04
+- Diagnostic focus:
+  - lag-1 and lag-2 correlations of the inter-burst period and burst width
+  - odd/even subsequence means
+  - odd/even subsequence CVs
+  - two-cycle residuals std(T[n+2] - T[n]) and std(W[n+2] - W[n])
+
+Results:
+
+1. ridge_peak: theta0 = -4.90, E = 1.08
+- n_events = 1033
+- burst_score = 2.581362
+- period_cv = 0.708823
+- width_cv = 0.786983
+- crossing_ratio = 1.000000
+- period_lag1 = -0.998741
+- width_lag1 = -0.996498
+- period_lag2 = 0.997453
+- width_lag2 = 0.995185
+- odd/even period means = [5.093169, 29.731263]
+- odd/even width means = [27.954756, 3.369303]
+- odd/even period CVs = [0.037317, 0.021137]
+- odd/even width CVs = [0.047334, 0.055763]
+- two-cycle residual stds = [period 0.880192, width 1.210321]
+
+2. ridge_inner: theta0 = -4.90, E = 1.07
+- n_events = 1061
+- burst_score = 2.562977
+- period_cv = 0.703180
+- width_cv = 0.782167
+- crossing_ratio = 1.000000
+- period_lag1 = -0.999955
+- width_lag1 = -0.999665
+- period_lag2 = 0.999894
+- width_lag2 = 0.999618
+- odd/even period means = [5.044425, 28.851719]
+- odd/even width means = [27.103807, 3.322085]
+- odd/even period CVs = [0.016263, 0.003898]
+- odd/even width CVs = [0.015512, 0.022160]
+- two-cycle residual stds = [period 0.173462, width 0.328944]
+
+3. ridge_end: theta0 = -4.86, E = 1.05
+- n_events = 1023
+- burst_score = 2.593810
+- period_cv = 0.713289
+- width_cv = 0.789640
+- crossing_ratio = 1.000000
+- period_lag1 = -0.999670
+- width_lag1 = -0.999269
+- period_lag2 = 0.999338
+- width_lag2 = 0.998937
+- odd/even period means = [5.053684, 30.079775]
+- odd/even width means = [28.328961, 3.334116]
+- odd/even period CVs = [0.020569, 0.010685]
+- odd/even width CVs = [0.020968, 0.029759]
+- two-cycle residual stds = [period 0.455679, width 0.577115]
+
+4. boundary: theta0 = -4.84, E = 1.04
+- n_events = 1005
+- burst_score = 0.579529
+- period_cv = 0.157440
+- width_cv = 0.176367
+- crossing_ratio = 1.000000
+- period_lag1 = -0.999618
+- width_lag1 = -0.997649
+- period_lag2 = 0.999113
+- width_lag2 = 0.997028
+- odd/even period means = [15.081641, 20.710030]
+- odd/even width means = [18.972595, 13.357306]
+- odd/even period CVs = [0.006976, 0.003665]
+- odd/even width CVs = [0.013763, 0.007640]
+- two-cycle residual stds = [period 0.118640, width 0.217125]
+
+Interpretation:
+- Along the ridge, the long-window return-map evidence supports a stable period-2-like branch, not an obvious cascade to higher-period or irregular bursting.
+- The strongest evidence is at theta0 = -4.90, E = 1.07:
+  - lag-1 is almost exactly -1
+  - lag-2 is almost exactly +1
+  - odd/even subsequence CVs are extremely small
+  - the two-cycle residuals are much smaller than the odd-even separation
+- The point theta0 = -4.86, E = 1.05 still behaves like the same alternating branch.
+- The boundary point theta0 = -4.84, E = 1.04 also remains period-2-like, but the odd-even separation is much smaller, so the branch there looks weaker rather than more strongly split.
+- Current evidence therefore favors:
+  1. a robust period-2 relaxation branch in this 4D patch
+  2. weakening toward the local boundary
+  3. no sign yet of a further period-doubling cascade or classical MMO/bursting

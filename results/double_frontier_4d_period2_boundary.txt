@@ -1,0 +1,68 @@
+4D local period-2 boundary scan in the (theta0, E) plane
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Method:
+- Grid scan:
+  - theta0 = -4.90:0.01:-4.80
+  - E = 1.02:0.01:1.10
+- Integration window:
+  - tmax = 18000
+  - transient = 9000
+  - saveat = 0.25
+- Period-2 strength proxy used here:
+  0.5 * (period_gap + width_gap)
+  - 0.5 * (period_lag1 + width_lag1)
+  + 0.5 * (period_lag2 + width_lag2)
+
+Top period-2 points:
+1. theta0 = -4.86, E = 1.05
+   burst = 2.592946
+   p2 = 3.496541
+
+2. theta0 = -4.89, E = 1.07
+   burst = 2.588536
+   p2 = 3.492804
+
+3. theta0 = -4.83, E = 1.02
+   burst = 2.583764
+   p2 = 3.489515
+
+Strong-region summary:
+- Using p2 >= 2.2 as a pragmatic cutoff for a strong period-2 signal:
+  - theta0 = -4.90 -> strong E range [1.02, 1.09]
+  - theta0 = -4.89 -> strong E range [1.02, 1.08]
+  - theta0 = -4.88 -> strong E range [1.02, 1.07]
+  - theta0 = -4.87 -> strong E range [1.02, 1.06]
+  - theta0 = -4.86 -> strong E range [1.02, 1.05]
+  - theta0 = -4.85 -> strong E range [1.02, 1.05]
+  - theta0 = -4.84 -> strong E range [1.02, 1.04]
+  - theta0 = -4.83 -> strong E range [1.02, 1.02]
+  - theta0 = -4.82 -> only a marginal strong point remains at E = 1.05
+  - theta0 = -4.81 and -4.80 -> no strong points remain
+
+E-slice summary:
+- E = 1.02 -> strong theta0 range [-4.90, -4.83]
+- E = 1.03 -> strong theta0 range [-4.90, -4.84]
+- E = 1.04 -> strong theta0 range [-4.90, -4.84]
+- E = 1.05 -> strong theta0 range [-4.90, -4.82]
+- E = 1.06 -> strong theta0 range [-4.90, -4.87]
+- E = 1.07 -> strong theta0 range [-4.90, -4.88]
+- E = 1.08 -> strong theta0 range [-4.90, -4.89]
+- E = 1.09 -> only theta0 = -4.90 remains strong
+- E = 1.10 -> no strong points remain
+
+Interpretation:
+- The period-2 region is not just a single ridge line. In this local scan it forms a tongue-like wedge in the (theta0, E) plane.
+- The wedge widens toward lower E and more negative theta0, and narrows sharply toward higher E and less negative theta0.
+- The upper-right edge is the most fragile part:
+  - by E = 1.09 only theta0 = -4.90 is still strongly period-2
+  - by E = 1.10 the strong period-2 tongue disappears
+- The right edge is around theta0 = -4.82 to -4.81 in the mid-E range.
+- This supports the picture of a robust local period-2 relaxation tongue, not an immediate route into higher-period or irregular bursting inside the scanned patch.

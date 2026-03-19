@@ -1,4 +1,5 @@
 using Printf
+using Base.Threads: @threads, nthreads
 
 using Plots
 
@@ -9,79 +10,108 @@ mkpath(RESULTS_DIR)
 
 function scan_relaxation_candidates()
     base = base_params(beta_n = 2.0, lambda_D = 20.0, theta0 = -5.0, epsilon = 0.01)
-    candidates = NamedTuple[]
+    combos = [(chi_R = chi_R, gamma_q = gamma_q, nu0 = nu0) for chi_R in (0.8, 1.2), gamma_q in (2.0, 2.8), nu0 in (0.1, 0.2, 0.3)]
+    combo_list = vec(combos)
+    candidates = Vector{NamedTuple}(undef, length(combo_list))
 
-    for chi_R in (0.8, 1.2)
-        for gamma_q in (2.0, 2.8)
-            for nu0 in (0.1, 0.2, 0.3)
-                best_amp = -Inf
-                best_E = NaN
-                best_sim = nothing
+    @threads for idx in eachindex(combo_list)
+        combo = combo_list[idx]
+        best_amp = -Inf
+        best_E = NaN
+        best_sim = nothing
 
-                for E in range(1.10, 1.35, length = 11)
-                    p = merge(base, (chi_R = chi_R, gamma_q = gamma_q, nu0 = nu0, E = E))
-                    sim = simulate_2d(p; u0 = [0.08, 0.0], tmax = 2600.0, transient = 1400.0, saveat = 0.2)
-                    if sim.damp > best_amp
-                        best_amp = sim.damp
-                        best_E = E
-                        best_sim = sim
-                    end
-                end
-
-                push!(candidates, (
-                    chi_R = chi_R,
-                    gamma_q = gamma_q,
-                    nu0 = nu0,
-                    best_E = best_E,
-                    best_amp = best_amp,
-                    dmin = isnothing(best_sim) ? NaN : best_sim.dmin,
-                    dmax = isnothing(best_sim) ? NaN : best_sim.dmax,
-                ))
+        for E in range(1.10, 1.35, length = 11)
+            p = merge(base, (chi_R = combo.chi_R, gamma_q = combo.gamma_q, nu0 = combo.nu0, E = E))
+            sim = simulate_2d(p; u0 = [0.08, 0.0], tmax = 2600.0, transient = 1400.0, saveat = 0.2)
+            if sim.damp > best_amp
+                best_amp = sim.damp
+                best_E = E
+                best_sim = sim
             end
         end
+
+        candidates[idx] = (
+            chi_R = combo.chi_R,
+            gamma_q = combo.gamma_q,
+            nu0 = combo.nu0,
+            best_E = best_E,
+            best_amp = best_amp,
+            dmin = isnothing(best_sim) ? NaN : best_sim.dmin,
+            dmax = isnothing(best_sim) ? NaN : best_sim.dmax,
+        )
     end
 
     sort!(candidates; by = x -> x.best_amp, rev = true)
     return candidates
 end
 
-function refine_jump_scan(base, epsilons)
-    scans = Dict{Float64, NamedTuple}()
+function run_jump_scan(base, epsilon, E_vals)
+    amps = Vector{Float64}(undef, length(E_vals))
+    dmins = Vector{Float64}(undef, length(E_vals))
+    dmaxs = Vector{Float64}(undef, length(E_vals))
 
-    for epsilon in epsilons
-        E_vals = collect(range(1.205, 1.223, length = 10))
-        amps = Float64[]
-        dmins = Float64[]
-        dmaxs = Float64[]
+    for j in eachindex(E_vals)
+        E = E_vals[j]
+        p = merge(base, (epsilon = epsilon, E = E))
+        sim = simulate_2d(p; u0 = [0.08, 0.0], tmax = 4200.0, transient = 2200.0, saveat = 0.2)
+        amps[j] = sim.damp
+        dmins[j] = sim.dmin
+        dmaxs[j] = sim.dmax
+    end
 
-        for E in E_vals
-            p = merge(base, (epsilon = epsilon, E = E))
-            sim = simulate_2d(p; u0 = [0.08, 0.0], tmax = 4200.0, transient = 2200.0, saveat = 0.2)
-            push!(amps, sim.damp)
-            push!(dmins, sim.dmin)
-            push!(dmaxs, sim.dmax)
+    diffs = diff(amps)
+    jump_idx = argmax(diffs)
+    return (
+        E = E_vals,
+        amp = amps,
+        dmin = dmins,
+        dmax = dmaxs,
+        jump_idx = jump_idx,
+        jump_left = E_vals[jump_idx],
+        jump_right = E_vals[jump_idx + 1],
+        jump_size = diffs[jump_idx],
+        step = E_vals[2] - E_vals[1],
+    )
+end
+
+function refine_jump_scan(base, epsilons; levels = (10, 9, 9))
+    epsilon_list = collect(epsilons)
+    scan_list = Vector{Pair{Float64, NamedTuple}}(undef, length(epsilon_list))
+
+    @threads for idx in eachindex(epsilon_list)
+        epsilon = epsilon_list[idx]
+        left = 1.205
+        right = 1.223
+        stage_results = NamedTuple[]
+
+        for points in levels
+            scan = run_jump_scan(base, epsilon, collect(range(left, right, length = points)))
+            push!(stage_results, scan)
+            left = scan.jump_left
+            right = scan.jump_right
         end
 
-        diffs = diff(amps)
-        jump_idx = argmax(diffs)
-        scans[epsilon] = (
-            E = E_vals,
-            amp = amps,
-            dmin = dmins,
-            dmax = dmaxs,
-            jump_idx = jump_idx,
-            jump_left = E_vals[jump_idx],
-            jump_right = E_vals[jump_idx + 1],
-            jump_size = diffs[jump_idx],
+        finest = stage_results[end]
+        scan_list[idx] = epsilon => (
+            E = finest.E,
+            amp = finest.amp,
+            dmin = finest.dmin,
+            dmax = finest.dmax,
+            jump_idx = finest.jump_idx,
+            jump_left = finest.jump_left,
+            jump_right = finest.jump_right,
+            jump_size = finest.jump_size,
+            step = finest.step,
+            stages = stage_results,
         )
     end
 
-    return scans
+    return Dict(scan_list)
 end
 
-function representative_simulations(base, epsilon)
-    below = simulate_2d(merge(base, (epsilon = epsilon, E = 1.215)); u0 = [0.08, 0.0], tmax = 6000.0, transient = 2500.0, saveat = 0.1)
-    above = simulate_2d(merge(base, (epsilon = epsilon, E = 1.217)); u0 = [0.08, 0.0], tmax = 6000.0, transient = 2500.0, saveat = 0.1)
+function representative_simulations(base, epsilon, scan)
+    below = simulate_2d(merge(base, (epsilon = epsilon, E = scan.jump_left)); u0 = [0.08, 0.0], tmax = 6000.0, transient = 2500.0, saveat = 0.1)
+    above = simulate_2d(merge(base, (epsilon = epsilon, E = scan.jump_right)); u0 = [0.08, 0.0], tmax = 6000.0, transient = 2500.0, saveat = 0.1)
     return below, above
 end
 
@@ -104,27 +134,28 @@ function save_candidate_plot(candidates)
 end
 
 function save_jump_plot(scans)
-    p1 = plot(size = (1200, 800), layout = (2, 1))
-    p2 = plot(size = (1200, 800), layout = (2, 1))
+    p_amp = plot()
+    p_dmin = plot()
+    p_dmax = plot()
 
     for epsilon in sort(collect(keys(scans)); rev = true)
         scan = scans[epsilon]
-        plot!(p1[1], scan.E, scan.amp; lw = 2, marker = :circle, label = @sprintf("epsilon = %.3f", epsilon))
-        plot!(p1[2], scan.E, scan.dmin; lw = 2, marker = :circle, label = @sprintf("dmin, epsilon = %.3f", epsilon))
-        plot!(p2[1], scan.E, scan.dmax; lw = 2, marker = :circle, label = @sprintf("dmax, epsilon = %.3f", epsilon))
+        plot!(p_amp, scan.E, scan.amp; lw = 2, marker = :circle, label = @sprintf("epsilon = %.3f", epsilon))
+        plot!(p_dmin, scan.E, scan.dmin; lw = 2, marker = :circle, label = @sprintf("dmin, epsilon = %.3f", epsilon))
+        plot!(p_dmax, scan.E, scan.dmax; lw = 2, marker = :circle, label = @sprintf("dmax, epsilon = %.3f", epsilon))
     end
 
-    xlabel!(p1[1], "E")
-    ylabel!(p1[1], "d amplitude")
-    title!(p1[1], "2D direct-simulation jump scan near the oscillation onset")
-    xlabel!(p1[2], "E")
-    ylabel!(p1[2], "dmin")
-    title!(p1[2], "Lower envelope collapses toward 0 on the large cycle")
-    xlabel!(p2[1], "E")
-    ylabel!(p2[1], "dmax")
-    title!(p2[1], "Upper envelope stays near the doer cap")
+    xlabel!(p_amp, "E")
+    ylabel!(p_amp, "d amplitude")
+    title!(p_amp, "2D direct-simulation jump scan near the oscillation onset")
+    xlabel!(p_dmin, "E")
+    ylabel!(p_dmin, "dmin")
+    title!(p_dmin, "Lower envelope collapses toward 0 on the large cycle")
+    xlabel!(p_dmax, "E")
+    ylabel!(p_dmax, "dmax")
+    title!(p_dmax, "Upper envelope stays near the doer cap")
 
-    combo = plot(p1[1], p1[2], p2[1]; layout = (3, 1), size = (1100, 1100))
+    combo = plot(p_amp, p_dmin, p_dmax; layout = (3, 1), size = (1100, 1100))
     savefig(combo, joinpath(RESULTS_DIR, "double_frontier_2d_jump_scan.png"))
 end
 
@@ -136,7 +167,7 @@ function save_representative_plot(below, above)
         xlabel = "t",
         ylabel = "d(t)",
         title = "Below the jump window: converges to equilibrium",
-        label = @sprintf("E = %.3f", below.E),
+        label = @sprintf("E = %.6f", below.E),
     )
     plot!(p1, below.t, below.q; lw = 2, label = "q")
 
@@ -147,7 +178,7 @@ function save_representative_plot(below, above)
         xlabel = "t",
         ylabel = "d(t)",
         title = "Above the jump window: large relaxation cycle",
-        label = @sprintf("E = %.3f", above.E),
+        label = @sprintf("E = %.6f", above.E),
     )
     plot!(p2, above.t, above.q; lw = 2, label = "q")
 
@@ -193,10 +224,14 @@ function save_summary(candidates, scans, below, above, base)
             scan = scans[epsilon]
             println(io, @sprintf("- epsilon = %.3f: jump between E = %.6f and E = %.6f with amplitude increase %.6f",
                 epsilon, scan.jump_left, scan.jump_right, scan.jump_size))
+            for (level, stage) in enumerate(scan.stages)
+                println(io, @sprintf("  level %d: window [%.6f, %.6f], step %.8f, jump [%.6f, %.6f], amp increase %.6f",
+                    level, first(stage.E), last(stage.E), stage.step, stage.jump_left, stage.jump_right, stage.jump_size))
+            end
         end
         println(io)
-        println(io, @sprintf("Representative below-jump simulation: E = %.3f, d_amp = %.6f", below.E, below.damp))
-        println(io, @sprintf("Representative above-jump simulation: E = %.3f, d_amp = %.6f, d-range = [%.6f, %.6f]",
+        println(io, @sprintf("Representative below-jump simulation: E = %.6f, d_amp = %.6f", below.E, below.damp))
+        println(io, @sprintf("Representative above-jump simulation: E = %.6f, d_amp = %.6f, d-range = [%.6f, %.6f]",
             above.E, above.damp, above.dmin, above.dmax))
         println(io)
         println(io, "Interpretation:")
@@ -208,6 +243,7 @@ function save_summary(candidates, scans, below, above, base)
 end
 
 function main()
+    @info "Julia thread count" threads = nthreads()
     candidates = scan_relaxation_candidates()
     chosen = candidates[1]
     chosen_base = merge(
@@ -216,7 +252,7 @@ function main()
     )
 
     scans = refine_jump_scan(chosen_base, (0.05, 0.02, 0.01))
-    below, above = representative_simulations(chosen_base, 0.02)
+    below, above = representative_simulations(chosen_base, 0.02, scans[0.02])
 
     save_candidate_plot(candidates)
     save_jump_plot(scans)
@@ -230,9 +266,10 @@ function main()
         scan = scans[epsilon]
         println(@sprintf("epsilon = %.3f jump window: E = %.6f -> %.6f, amplitude increase = %.6f",
             epsilon, scan.jump_left, scan.jump_right, scan.jump_size))
+        println(@sprintf("  finest step = %.8f", scan.step))
     end
-    println(@sprintf("Below jump: E = %.3f, d_amp = %.6f", below.E, below.damp))
-    println(@sprintf("Above jump: E = %.3f, d_amp = %.6f", above.E, above.damp))
+    println(@sprintf("Below jump: E = %.6f, d_amp = %.6f", below.E, below.damp))
+    println(@sprintf("Above jump: E = %.6f, d_amp = %.6f", above.E, above.damp))
 end
 
 main()

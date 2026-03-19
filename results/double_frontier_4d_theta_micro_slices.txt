@@ -1,0 +1,110 @@
+4D theta0 micro-slices through the period-2 micro-window region
+Date: 2026-03-19
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+- tmax = 12000
+- transient = 6000
+- saveat = 0.25
+
+Diagnostic:
+  p2 = 0.5 * (period_gap + width_gap)
+       - 0.5 * (period_lag1 + width_lag1)
+       + 0.5 * (period_lag2 + width_lag2)
+
+Goal:
+- Determine whether the strong E-micro-windows are isolated islands in (theta0, E)
+  or narrow stripe-like structures.
+
+Slice A1:
+- E = 1.0470
+- theta0 = -4.8410:-0.0001:-4.8390
+
+Strong windows:
+- [-4.8410, -4.8410]
+- [-4.8405, -4.8405]
+- [-4.8400, -4.8400]
+- [-4.8396, -4.8396]
+- [-4.8394, -4.8394]
+
+Interpretation:
+- The strong state appears only at isolated theta0 points at this resolution.
+- Around E = 1.0470 the geometry looks island-like, not stripe-like.
+
+Slice A2:
+- E = 1.0473
+- theta0 = -4.8410:-0.0001:-4.8390
+
+Strong windows:
+- [-4.8408, -4.8408]
+- [-4.8400, -4.8400]
+
+Interpretation:
+- This slice is even more point-like than A1.
+- The strong period-2 state survives only on a few isolated theta0 micro-points.
+
+Slice B1:
+- E = 1.0275
+- theta0 = -4.8310:-0.0001:-4.8290
+
+Strong windows:
+- [-4.8310, -4.8309]
+- [-4.8307, -4.8295]
+- [-4.8292, -4.8291]
+
+Weak gaps:
+- [-4.8308, -4.8308]
+- [-4.8294, -4.8293]
+- [-4.8290, -4.8290]
+
+Interpretation:
+- Here the strong state organizes into a narrow stripe with small holes punched out of it.
+- This is not an isolated island; it is a thin fragmented band.
+
+Slice B2:
+- E = 1.0281
+- theta0 = -4.8310:-0.0001:-4.8290
+
+Strong windows:
+- [-4.8310, -4.8302]
+- [-4.8300, -4.8300]
+- [-4.8298, -4.8298]
+- [-4.8294, -4.8292]
+- [-4.8290, -4.8290]
+
+Weak gaps:
+- [-4.8301, -4.8301]
+- [-4.8299, -4.8299]
+- [-4.8297, -4.8295]
+- [-4.8291, -4.8291]
+
+Interpretation:
+- This slice strongly favors a stripe-with-gaps picture.
+- The strong period-2 state persists along a narrow theta0 interval, but is repeatedly interrupted by very small holes.
+
+Representative jump sizes:
+- A1:
+  - max burst drop at theta0 = -4.8410 -> -4.8409: delta = -1.997353
+  - max p2 drop at theta0 = -4.8410 -> -4.8409: delta = -1.388662
+- A2:
+  - max burst drop at theta0 = -4.8408 -> -4.8407: delta = -1.390990
+  - max p2 drop at theta0 = -4.8408 -> -4.8407: delta = -1.376054
+- B1:
+  - max burst drop at theta0 = -4.8295 -> -4.8294: delta = -2.450485
+  - max p2 drop at theta0 = -4.8295 -> -4.8294: delta = -1.940560
+- B2:
+  - max burst drop at theta0 = -4.8302 -> -4.8301: delta = -2.398858
+  - max p2 drop at theta0 = -4.8300 -> -4.8299: delta = -2.150514
+
+Overall conclusion:
+- The local 4D micro-window geometry is mixed:
+  - near E ≈ 1.0470-1.0473 it looks like isolated strong islands in theta0
+  - near E ≈ 1.0275-1.0281 it looks like narrow stripe-like bands with micro-gaps
+- So the fragmented period-2 region is not purely point-like and not purely a smooth tongue either.
+- The most accurate local description is:
+  a highly fractured two-dimensional set made of thin bands, punctured stripes, and isolated micro-islands.
+- This is further evidence that the strong large-amplitude period-2 state survives on a very intricate parameter set, while weak alternating remnants fill in much of the surrounding region.

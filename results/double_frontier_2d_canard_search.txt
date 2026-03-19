@@ -1,0 +1,33 @@
+2D canard / relaxation search for the double-frontier model
+Base parameters: beta_n = 2.00, lambda_D = 20.00, theta0 = -5.00
+Selected feedback candidate: chi_R = 0.80, gamma_q = 2.00, nu0 = 0.10
+
+Top coarse-scan candidates by maximum post-transient d-amplitude:
+- chi_R = 0.80, gamma_q = 2.00, nu0 = 0.10, best E = 1.350, max amp = 0.991335, d-range = [0.000000, 0.991335]
+- chi_R = 0.80, gamma_q = 2.00, nu0 = 0.20, best E = 1.325, max amp = 0.991335, d-range = [0.000000, 0.991335]
+- chi_R = 0.80, gamma_q = 2.00, nu0 = 0.30, best E = 1.250, max amp = 0.991335, d-range = [0.000000, 0.991335]
+- chi_R = 0.80, gamma_q = 2.80, nu0 = 0.30, best E = 1.350, max amp = 0.991335, d-range = [0.000000, 0.991335]
+- chi_R = 0.80, gamma_q = 2.80, nu0 = 0.20, best E = 1.350, max amp = 0.991335, d-range = [0.000000, 0.991335]
+
+Refined jump windows:
+- epsilon = 0.050: jump between E = 1.216187 and E = 1.216219 with amplitude increase 0.991334
+  level 1: window [1.205000, 1.223000], step 0.00200000, jump [1.215000, 1.217000], amp increase 0.991334
+  level 2: window [1.215000, 1.217000], step 0.00025000, jump [1.216000, 1.216250], amp increase 0.991334
+  level 3: window [1.216000, 1.216250], step 0.00003125, jump [1.216187, 1.216219], amp increase 0.991334
+- epsilon = 0.020: jump between E = 1.216156 and E = 1.216187 with amplitude increase 0.991335
+  level 1: window [1.205000, 1.223000], step 0.00200000, jump [1.215000, 1.217000], amp increase 0.991335
+  level 2: window [1.215000, 1.217000], step 0.00025000, jump [1.216000, 1.216250], amp increase 0.991335
+  level 3: window [1.216000, 1.216250], step 0.00003125, jump [1.216156, 1.216187], amp increase 0.991335
+- epsilon = 0.010: jump between E = 1.216125 and E = 1.216156 with amplitude increase 0.991335
+  level 1: window [1.205000, 1.223000], step 0.00200000, jump [1.215000, 1.217000], amp increase 0.991335
+  level 2: window [1.215000, 1.217000], step 0.00025000, jump [1.216000, 1.216250], amp increase 0.991335
+  level 3: window [1.216000, 1.216250], step 0.00003125, jump [1.216125, 1.216156], amp increase 0.991335
+
+Representative below-jump simulation: E = 1.216156, d_amp = 0.000000
+Representative above-jump simulation: E = 1.216187, d_amp = 0.991335, d-range = [0.000000, 0.991335]
+
+Interpretation:
+- The coarse screen finds genuine stable large-amplitude 2D oscillations once q-feedback is strengthened.
+- In the selected parameter set the post-transient amplitude jumps from numerical zero to O(1) over a very narrow E interval.
+- This is strong evidence for a relaxation-oscillation regime and a canard-like onset, but not yet a full proof of a classical canard explosion.
+- To upgrade the claim from canard-like to canard, the next step is higher-accuracy periodic-orbit continuation anchored to the Hopf neighborhood.

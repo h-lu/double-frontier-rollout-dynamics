@@ -1,0 +1,62 @@
+4D ridge refinement around the strongest period-2-like modulation candidate
+Date: 2026-03-18
+
+Base parameters:
+- G = 1.0
+- epsilon = 0.01
+- eta_h = 0.002
+- eta_k = 0.003
+- beta_n = 1.5
+
+Short-window refinement scan:
+- Integration window: tmax = 12000, transient = 6000, saveat = 0.25
+- theta0 values: -5.10:0.05:-4.80
+- E values: 1.04:0.01:1.10
+- Alternation score used here:
+  0.5 * (period_alt_gap + width_alt_gap) - 0.5 * (period_lag1 + width_lag1)
+
+Top alternation-score candidates:
+1. theta0 = -4.90, E = 1.08
+   burst = 2.579976
+   alt = 2.488557
+   period_cv = 0.709644
+   width_cv = 0.784649
+   period_lag1 = -0.998510
+   width_lag1 = -0.998340
+
+2. theta0 = -4.90, E = 1.07
+   burst = 2.568019
+   alt = 2.483006
+   period_cv = 0.704666
+   width_cv = 0.783072
+   period_lag1 = -0.999954
+   width_lag1 = -0.999411
+
+3. theta0 = -4.86, E = 1.05
+   burst = 2.597594
+   alt = 2.492739
+   period_cv = 0.713344
+   width_cv = 0.791727
+   period_lag1 = -0.999251
+   width_lag1 = -0.992708
+
+Refined boundary observations:
+- A strong alternating ridge persists from roughly theta0 = -5.10 up to theta0 = -4.86.
+- Along that ridge, the best E drifts downward as theta0 increases:
+  - theta0 = -5.10 -> best E = 1.10, alt = 2.285708
+  - theta0 = -5.00 -> best E = 1.10, alt = 2.401135
+  - theta0 = -4.95 -> best E = 1.10, alt = 2.463896
+  - theta0 = -4.90 -> best E = 1.08, alt = 2.488557
+  - theta0 = -4.88 -> best E = 1.05, alt = 2.472584
+  - theta0 = -4.86 -> best E = 1.05, alt = 2.492739
+- The structure weakens sharply by theta0 = -4.84:
+  - best point there is theta0 = -4.84, E = 1.04 with alt = 1.793427
+- By theta0 = -4.82 and theta0 = -4.80, the strong ridge is gone:
+  - theta0 = -4.82 -> best alt = 1.398589
+  - theta0 = -4.80 -> best alt = 1.002518
+  - corresponding burst scores fall to 0.715537 and 0.136001
+
+Interpretation:
+- The best 4D phenomenon remains a period-2-like relaxation modulation, not classical MMO.
+- It is not an isolated point; it occupies a narrow slanted ridge in the (theta0, E) plane.
+- The ridge appears to terminate abruptly between theta0 = -4.86 and theta0 = -4.84, suggesting a local boundary or tongue edge rather than a broad plateau.
